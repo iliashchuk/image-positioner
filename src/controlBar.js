@@ -1,12 +1,15 @@
-class ControrBar {
-  constructor({ configCallback, deleteCallback, deleteAllCallback }) {
+class ControlBar {
+  constructor({
+    setConfigCallback, deleteCallback, deleteAllCallback, applyStyleCallback,
+  }) {
     this.selectedShape = null;
     this.element = document.getElementById('controlBar');
-    this.configCallback = configCallback;
+    this.setConfigCallback = setConfigCallback;
+    this.applyStyleCallback = applyStyleCallback;
     this.deleteCallback = deleteCallback;
     this.deleteAllCallback = deleteAllCallback;
 
-    this.configCallback({ size: 50, opacity: 100, fillColor: '#000000' });
+    this.setConfigCallback({ size: 50, opacity: 100, fillColor: '#000000' });
     this.setSelectedShape = this.setSelectedShape.bind(this);
     this.unsetSelectedShape = this.unsetSelectedShape.bind(this);
 
@@ -28,6 +31,8 @@ class ControrBar {
 
     this.setDeleteButtonTextAndHandler(this.selectedShape);
     this.setConfigToShapeConfig(shape);
+
+    document.getElementById('applyStyle').style.display = 'initial';
   }
 
   unsetSelectedShape() {
@@ -36,6 +41,9 @@ class ControrBar {
       this.selectedShape = null;
 
       this.setDeleteButtonTextAndHandler();
+
+      document.getElementById('applyStyle').style.display = 'none';
+
       return true;
     }
 
@@ -48,7 +56,7 @@ class ControrBar {
     document.getElementById('circleOpacity').value = shape.opacity * 100;
     document.getElementById('circleName').value = shape.name ?? '';
 
-    this.configCallback({ shape });
+    this.setConfigCallback(ControlBar.extractStyleFromConfig(shape));
   }
 
   setDeleteButtonTextAndHandler(selectedShape) {
@@ -76,7 +84,7 @@ class ControrBar {
         this.selectedShape.size = size;
       }
 
-      this.configCallback({ size });
+      this.setConfigCallback({ size });
     });
 
     document
@@ -88,7 +96,7 @@ class ControrBar {
           this.selectedShape.opacity = opacity;
         }
 
-        this.configCallback({ opacity });
+        this.setConfigCallback({ opacity });
       });
 
     document.getElementById('circleName').addEventListener('input', (e) => {
@@ -99,7 +107,7 @@ class ControrBar {
         document.getElementById('deleteCircle').textContent = `Remove ${this.selectedShape.name ?? 'selected'}`;
       }
 
-      this.configCallback();
+      this.setConfigCallback();
     });
 
     document
@@ -111,9 +119,20 @@ class ControrBar {
           this.selectedShape.fillColor = fillColor;
         }
 
-        this.configCallback({ fillColor });
+        this.setConfigCallback({ fillColor });
       });
+
+    document.getElementById('applyStyle').onclick = () => {
+      if (this.selectedShape) {
+        this.applyStyleCallback(ControlBar.extractStyleFromConfig(this.selectedShape));
+      }
+    };
+  }
+
+  static extractStyleFromConfig(config) {
+    const { fillColor, size, opacity } = config;
+    return { fillColor, size, opacity };
   }
 }
 
-export default ControrBar;
+export default ControlBar;

@@ -4,9 +4,10 @@ import setupImageUploader from './imageUploader';
 
 const circleCanvas = new CircleCanvas();
 const controlBar = new ControlBar({
-  configCallback: circleCanvas.configCallback,
+  setConfigCallback: circleCanvas.setConfig,
   deleteCallback: circleCanvas.deleteCircle,
   deleteAllCallback: circleCanvas.deleteAllCircles,
+  applyStyleCallback: circleCanvas.applyStyle,
 });
 
 circleCanvas.setSelectionControls(controlBar.setSelectedShape, controlBar.unsetSelectedShape);

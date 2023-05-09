@@ -8,13 +8,24 @@ export default class CircleCanvas {
     this.config = {};
     this.setupListeners();
 
-    this.configCallback = this.configCallback.bind(this);
+    this.setConfig = this.setConfig.bind(this);
+    this.applyStyle = this.applyStyle.bind(this);
     this.deleteCircle = this.deleteCircle.bind(this);
     this.deleteAllCircles = this.deleteAllCircles.bind(this);
   }
 
-  configCallback(config = {}) {
+  setConfig(config = {}) {
     this.config = { ...this.config, ...config };
+
+    this.drawCircles();
+  }
+
+  applyStyle(style) {
+    this.setConfig(style);
+
+    this.circles = this.circles.map(
+      (circle) => ({ ...circle, ...style }),
+    );
 
     this.drawCircles();
   }
