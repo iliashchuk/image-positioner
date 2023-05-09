@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Upload and Preview</title>
+  </head>
+  <body>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <div id="controlBar" style="display: none;">
+      <label for="circleSize">Circle Size: </label>
+      <input type="range" id="circleSize" min="10" max="100" value="50" />
+      <label for="circleOpacity">Circle Opacity: </label>
+      <input type="range" id="circleOpacity" min="0" max="100" value="100" />
+      <label for="circleName">Circle Name: </label>
+      <input type="text" id="circleName" />
+    </div>
+    <div>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script src="imagePositioner.js"></script>
+  </body>
+</html>
