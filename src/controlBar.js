@@ -4,14 +4,11 @@ class ControrBar {
     this.element = document.getElementById('controlBar');
     this.configCallback = configCallback;
 
-    this.configCallback({ size: 50, opacity: 100 });
-    this.setSelectedShapeCallback = this.setSelectedShapeCallback.bind(this);
+    this.configCallback({ size: 50, opacity: 100, fillColor: '#000000' });
+    this.setSelectedShape = this.setSelectedShape.bind(this);
+    this.unsetSelectedShape = this.unsetSelectedShape.bind(this);
 
     this.setupListeners();
-  }
-
-  setSelectedShapeCallback(shape) {
-    this.selectedShape = shape;
   }
 
   hide() {
@@ -20,6 +17,34 @@ class ControrBar {
 
   show() {
     this.element.style.display = 'block';
+  }
+
+  setSelectedShape(shape) {
+    this.unsetSelectedShape();
+
+    this.selectedShape = shape;
+
+    this.setConfigToShapeConfig(shape);
+  }
+
+  unsetSelectedShape() {
+    if (this.selectedShape) {
+      this.selectedShape.selected = false;
+      this.selectedShape = null;
+
+      return true;
+    }
+
+    return false;
+  }
+
+  setConfigToShapeConfig(shape) {
+    document.getElementById('circleSize').value = shape.size;
+    document.getElementById('circleFillColor').value = shape.fillColor;
+    document.getElementById('circleOpacity').value = shape.opacity * 100;
+    document.getElementById('circleName').value = shape.name ?? '';
+
+    this.configCallback({ shape });
   }
 
   setupListeners() {
@@ -43,6 +68,28 @@ class ControrBar {
         }
 
         this.configCallback({ opacity });
+      });
+
+    document.getElementById('circleName').addEventListener('input', (e) => {
+      const name = e.target.value;
+
+      if (this.selectedShape) {
+        this.selectedShape.name = name;
+      }
+
+      this.configCallback();
+    });
+
+    document
+      .getElementById('circleFillColor')
+      .addEventListener('input', (e) => {
+        const fillColor = e.target.value;
+
+        if (this.selectedShape) {
+          this.selectedShape.fillColor = fillColor;
+        }
+
+        this.configCallback({ fillColor });
       });
   }
 }

@@ -11,8 +11,15 @@ export default class ShapesCanvas {
     this.configCallback = this.configCallback.bind(this);
   }
 
-  configCallback(config) {
+  configCallback(config = {}) {
     this.config = { ...this.config, ...config };
+
+    this.drawCircles();
+  }
+
+  setSelectionControls(setSelectedShape, unsetSelectedShape) {
+    this.setSelectedShape = setSelectedShape;
+    this.unsetSelectedShape = unsetSelectedShape;
   }
 
   setBackgroundImage(backgroundImageUrl) {
@@ -40,12 +47,16 @@ export default class ShapesCanvas {
       this.movingCircle = this.circles.find((circle) => ShapesCanvas.isPointInCircle(circle, x, y));
 
       if (this.movingCircle) {
-        document.getElementById('circleSize').value = this.movingCircle.radius;
-        document.getElementById('circleOpacity').value = this.movingCircle.opacity * 100;
-        document.getElementById('circleName').value = this.movingCircle.name;
-      } else {
-        this.addCircle(x, y);
+        return;
       }
+
+      if (this.unsetSelectedShape()) {
+        this.drawCircles();
+
+        return;
+      }
+
+      this.addCircle(x, y);
     });
 
     this.canvas.addEventListener('mousemove', (e) => {
@@ -63,22 +74,23 @@ export default class ShapesCanvas {
 
     this.canvas.addEventListener('dblclick', (e) => {
       const { x, y } = this.extractEventCoordinates(e);
-      const circleToDelete = this.circles.find(
+      const circleToSelect = this.circles.find(
         (circle) => ShapesCanvas.isPointInCircle(circle, x, y),
       );
 
-      if (circleToDelete) {
-        this.circles = this.circles.filter((circle) => circle.id !== circleToDelete.id);
+      if (circleToSelect) {
+        circleToSelect.selected = true;
+        this.setSelectedShape(circleToSelect);
         this.drawCircles();
       }
     });
   }
 
   addCircle(x, y) {
-    const { size, opacity } = this.config;
+    const { size, opacity, fillColor } = this.config;
 
     this.circles.push({
-      x, y, radius: size, opacity, id: Math.random(),
+      x, y, size, opacity, fillColor, id: Math.random(),
     });
 
     this.drawCircles();
@@ -89,12 +101,19 @@ export default class ShapesCanvas {
     this.ctx.drawImage(this.backgroundImage, 0, 0, this.canvas.width, this.canvas.height);
 
     this.circles.forEach((circle) => {
+      const ajustedRadius = circle.selected ? circle.size - this.ctx.lineWidth / 2 : circle.size;
       this.ctx.beginPath();
-      this.ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+      this.ctx.arc(circle.x, circle.y, ajustedRadius, 0, 4 * Math.PI);
       this.ctx.globalAlpha = circle.opacity;
-      this.ctx.fillStyle = 'black';
+      this.ctx.fillStyle = circle.fillColor || 'black';
       this.ctx.fill();
       this.ctx.globalAlpha = 1;
+
+      if (circle.selected) {
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+      }
 
       if (circle.name) {
         this.ctx.font = '16px Arial';
@@ -112,7 +131,7 @@ export default class ShapesCanvas {
     const dx = x - circle.x;
     const dy = y - circle.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance <= circle.radius;
+    return distance <= circle.size;
   }
 
   extractEventCoordinates(e) {
