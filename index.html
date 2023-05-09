@@ -7,14 +7,15 @@
   </head>
   <body>
     <input type="file" id="imageUpload" accept="image/*" />
-    <div id="controlBar" style="display: none;">
+    <div id="controlBar" style="display: none; align-items: center; gap: 5px;">
       <label for="circleSize">Circle Size: </label>
       <input type="range" id="circleSize" min="10" max="100" value="50" />
       <label for="circleOpacity">Circle Opacity: </label>
       <input type="range" id="circleOpacity" min="0" max="100" value="100" />
       <label for="circleName">Circle Name: </label>
-      <input type="text" id="circleName" display="none" />
+      <input type="text" id="circleName" />
       <input type="color" id="circleFillColor" value="#000000">
+      <button id="deleteButton" style="margin-left: auto;">Remove All</button>
     </div>
     <div>
       <canvas id="canvas"></canvas>

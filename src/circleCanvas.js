@@ -1,4 +1,4 @@
-export default class ShapesCanvas {
+export default class CircleCanvas {
   constructor() {
     this.circles = [];
     this.movingCircle = null;
@@ -9,6 +9,8 @@ export default class ShapesCanvas {
     this.setupListeners();
 
     this.configCallback = this.configCallback.bind(this);
+    this.deleteCircle = this.deleteCircle.bind(this);
+    this.deleteAllCircles = this.deleteAllCircles.bind(this);
   }
 
   configCallback(config = {}) {
@@ -44,7 +46,7 @@ export default class ShapesCanvas {
   setupListeners() {
     this.canvas.addEventListener('mousedown', (e) => {
       const { x, y } = this.extractEventCoordinates(e);
-      this.movingCircle = this.circles.find((circle) => ShapesCanvas.isPointInCircle(circle, x, y));
+      this.movingCircle = this.circles.find((circle) => CircleCanvas.isPointInCircle(circle, x, y));
 
       if (this.movingCircle) {
         return;
@@ -73,9 +75,10 @@ export default class ShapesCanvas {
     });
 
     this.canvas.addEventListener('dblclick', (e) => {
+      e.stopPropagation();
       const { x, y } = this.extractEventCoordinates(e);
       const circleToSelect = this.circles.find(
-        (circle) => ShapesCanvas.isPointInCircle(circle, x, y),
+        (circle) => CircleCanvas.isPointInCircle(circle, x, y),
       );
 
       if (circleToSelect) {
@@ -93,6 +96,16 @@ export default class ShapesCanvas {
       x, y, size, opacity, fillColor, id: Math.random(),
     });
 
+    this.drawCircles();
+  }
+
+  deleteCircle(circleToDelete) {
+    this.circles = this.circles.filter((circle) => circle.id !== circleToDelete.id);
+    this.drawCircles();
+  }
+
+  deleteAllCircles() {
+    this.circles = [];
     this.drawCircles();
   }
 

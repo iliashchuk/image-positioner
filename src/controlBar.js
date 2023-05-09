@@ -1,8 +1,10 @@
 class ControrBar {
-  constructor(configCallback) {
+  constructor({ configCallback, deleteCallback, deleteAllCallback }) {
     this.selectedShape = null;
     this.element = document.getElementById('controlBar');
     this.configCallback = configCallback;
+    this.deleteCallback = deleteCallback;
+    this.deleteAllCallback = deleteAllCallback;
 
     this.configCallback({ size: 50, opacity: 100, fillColor: '#000000' });
     this.setSelectedShape = this.setSelectedShape.bind(this);
@@ -16,7 +18,7 @@ class ControrBar {
   }
 
   show() {
-    this.element.style.display = 'block';
+    this.element.style.display = 'flex';
   }
 
   setSelectedShape(shape) {
@@ -24,6 +26,7 @@ class ControrBar {
 
     this.selectedShape = shape;
 
+    this.setDeleteButtonTextAndHandler(this.selectedShape);
     this.setConfigToShapeConfig(shape);
   }
 
@@ -32,6 +35,7 @@ class ControrBar {
       this.selectedShape.selected = false;
       this.selectedShape = null;
 
+      this.setDeleteButtonTextAndHandler();
       return true;
     }
 
@@ -45,6 +49,23 @@ class ControrBar {
     document.getElementById('circleName').value = shape.name ?? '';
 
     this.configCallback({ shape });
+  }
+
+  setDeleteButtonTextAndHandler(selectedShape) {
+    if (selectedShape) {
+      document.getElementById('deleteButton').textContent = `Remove ${selectedShape.name ?? 'selected'}`;
+      document.getElementById('deleteButton').onclick = () => {
+        if (this.selectedShape) {
+          this.deleteCallback(this.selectedShape);
+          this.unsetSelectedShape();
+        }
+      };
+
+      return;
+    }
+
+    document.getElementById('deleteButton').textContent = 'Remove All';
+    document.getElementById('deleteButton').onclick = this.deleteAllCallback;
   }
 
   setupListeners() {
@@ -75,6 +96,7 @@ class ControrBar {
 
       if (this.selectedShape) {
         this.selectedShape.name = name;
+        document.getElementById('deleteCircle').textContent = `Remove ${this.selectedShape.name ?? 'selected'}`;
       }
 
       this.configCallback();

@@ -1,13 +1,18 @@
-import ShapesCanvas from './shapesCanvas';
+import CircleCanvas from './circleCanvas';
 import ControlBar from './controlBar';
 import setupImageUploader from './imageUploader';
 
-const shapesCanvas = new ShapesCanvas();
-const controlBar = new ControlBar(shapesCanvas.configCallback);
-shapesCanvas.setSelectionControls(controlBar.setSelectedShape, controlBar.unsetSelectedShape);
+const circleCanvas = new CircleCanvas();
+const controlBar = new ControlBar({
+  configCallback: circleCanvas.configCallback,
+  deleteCallback: circleCanvas.deleteCircle,
+  deleteAllCallback: circleCanvas.deleteAllCircles,
+});
+
+circleCanvas.setSelectionControls(controlBar.setSelectedShape, controlBar.unsetSelectedShape);
 
 const imageUploadedCallback = (imageUrl) => {
-  shapesCanvas.setBackgroundImage(imageUrl);
+  circleCanvas.setBackgroundImage(imageUrl);
   controlBar.show();
 };
 
