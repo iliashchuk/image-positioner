@@ -1,11 +1,21 @@
+import store from "store2";
+
+const STORAGE_KEYS = Object.freeze({
+  circles: 'circles',
+  config: 'config',
+});
+
 export default class CircleCanvas {
   constructor() {
-    this.circles = [];
+    const storedCircles = store(STORAGE_KEYS.circles);
+    const storedConfig = store(STORAGE_KEYS.config);
+
+    this.circles = storedCircles ?? [];
+    this.config = storedConfig ?? {};
     this.movingCircle = null;
     this.backgroundImage = new Image();
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
-    this.config = {};
     this.setupListeners();
 
     this.setConfig = this.setConfig.bind(this);
@@ -14,8 +24,14 @@ export default class CircleCanvas {
     this.deleteAllCircles = this.deleteAllCircles.bind(this);
   }
 
+  updateStoredCircles() {
+    store(STORAGE_KEYS.circles, this.circles);
+  }
+
   setConfig(config = {}) {
     this.config = { ...this.config, ...config };
+
+    store(STORAGE_KEYS.config, this.config);
 
     this.drawCircles();
   }
@@ -26,6 +42,8 @@ export default class CircleCanvas {
     this.circles = this.circles.map(
       (circle) => ({ ...circle, ...style }),
     );
+
+    this.updateStoredCircles();
 
     this.drawCircles();
   }
@@ -75,9 +93,7 @@ export default class CircleCanvas {
     this.canvas.addEventListener('mousemove', (e) => {
       if (this.movingCircle) {
         const { x, y } = this.extractEventCoordinates(e);
-        this.movingCircle.x = x;
-        this.movingCircle.y = y;
-        this.drawCircles();
+        this.moveMovingCircle(x, y);
       }
     });
 
@@ -107,16 +123,30 @@ export default class CircleCanvas {
       x, y, size, opacity, fillColor, id: Math.random(),
     });
 
+    this.updateStoredCircles();
     this.drawCircles();
   }
 
+  moveMovingCircle(x, y) {
+    this.movingCircle.x = x;
+    this.movingCircle.y = y;
+
+    this.updateStoredCircles();
+    this.drawCircles();
+  }
+  
+
   deleteCircle(circleToDelete) {
     this.circles = this.circles.filter((circle) => circle.id !== circleToDelete.id);
+
+    this.updateStoredCircles();
     this.drawCircles();
   }
 
   deleteAllCircles() {
     this.circles = [];
+
+    this.updateStoredCircles();
     this.drawCircles();
   }
 
