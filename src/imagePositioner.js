@@ -1,6 +1,6 @@
 import CircleCanvas from './circleCanvas';
 import ControlBar from './controlBar';
-import setupImageUploader from './imageUploader';
+import ImageUploader from './imageUploader';
 
 const circleCanvas = new CircleCanvas();
 const controlBar = new ControlBar({
@@ -21,4 +21,5 @@ const imageEmptyCallback = () => {
   controlBar.hide();
 };
 
-setupImageUploader(imageUploadedCallback, imageEmptyCallback);
+// this is bad, go back to single function
+new ImageUploader(imageUploadedCallback, imageEmptyCallback);
