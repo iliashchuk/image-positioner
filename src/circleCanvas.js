@@ -1,8 +1,8 @@
-import store from "store2";
+import store from 'store2';
 
 const STORAGE_KEYS = Object.freeze({
-    circles: "circles",
-    config: "config",
+    circles: 'circles',
+    config: 'config',
 });
 
 export default class CircleCanvas {
@@ -14,8 +14,8 @@ export default class CircleCanvas {
         this.config = storedConfig ?? {};
         this.movingCircle = null;
         this.backgroundImage = new Image();
-        this.canvas = document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d");
+        this.canvas = document.getElementById('canvas');
+        this.ctx = this.canvas.getContext('2d');
         this.setupListeners();
 
         this.setConfig = this.setConfig.bind(this);
@@ -77,10 +77,10 @@ export default class CircleCanvas {
     }
 
     setupListeners() {
-        this.canvas.addEventListener("mousedown", (e) => {
+        this.canvas.addEventListener('mousedown', (e) => {
             const { x, y } = this.extractEventCoordinates(e);
             this.movingCircle = this.circles.find((circle) =>
-                CircleCanvas.isPointInCircle(circle, x, y)
+                CircleCanvas.isPointInCircle(circle, x, y),
             );
 
             if (this.movingCircle) {
@@ -96,22 +96,22 @@ export default class CircleCanvas {
             this.addCircle(x, y);
         });
 
-        this.canvas.addEventListener("mousemove", (e) => {
+        this.canvas.addEventListener('mousemove', (e) => {
             if (this.movingCircle) {
                 const { x, y } = this.extractEventCoordinates(e);
                 this.moveMovingCircle(x, y);
             }
         });
 
-        this.canvas.addEventListener("mouseup", () => {
+        this.canvas.addEventListener('mouseup', () => {
             this.movingCircle = null;
         });
 
-        this.canvas.addEventListener("dblclick", (e) => {
+        this.canvas.addEventListener('dblclick', (e) => {
             e.stopPropagation();
             const { x, y } = this.extractEventCoordinates(e);
             const circleToSelect = this.circles.find((circle) =>
-                CircleCanvas.isPointInCircle(circle, x, y)
+                CircleCanvas.isPointInCircle(circle, x, y),
             );
 
             if (circleToSelect) {
@@ -148,7 +148,7 @@ export default class CircleCanvas {
 
     deleteCircle(circleToDelete) {
         this.circles = this.circles.filter(
-            (circle) => circle.id !== circleToDelete.id
+            (circle) => circle.id !== circleToDelete.id,
         );
 
         this.updateStoredCircles();
@@ -169,7 +169,7 @@ export default class CircleCanvas {
             0,
             0,
             this.canvas.width,
-            this.canvas.height
+            this.canvas.height,
         );
 
         this.circles.forEach((circle) => {
@@ -179,23 +179,23 @@ export default class CircleCanvas {
             this.ctx.beginPath();
             this.ctx.arc(circle.x, circle.y, ajustedRadius, 0, 4 * Math.PI);
             this.ctx.globalAlpha = circle.opacity;
-            this.ctx.fillStyle = circle.fillColor || "black";
+            this.ctx.fillStyle = circle.fillColor || 'black';
             this.ctx.fill();
             this.ctx.globalAlpha = 1;
 
             if (circle.selected) {
-                this.ctx.strokeStyle = "white";
+                this.ctx.strokeStyle = 'white';
                 this.ctx.lineWidth = 2;
                 this.ctx.stroke();
             }
 
             if (circle.name) {
-                this.ctx.font = "16px Arial";
-                this.ctx.fillStyle = "white";
+                this.ctx.font = '16px Arial';
+                this.ctx.fillStyle = 'white';
                 this.ctx.fillText(
                     circle.name,
                     circle.x - this.ctx.measureText(circle.name).width / 2,
-                    circle.y + 8
+                    circle.y + 8,
                 );
             }
         });

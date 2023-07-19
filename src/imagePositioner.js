@@ -1,6 +1,6 @@
-import CircleCanvas from "./circleCanvas";
-import ControlBar from "./controlBar";
-import setupImageUploader from "./imageUploader";
+import CircleCanvas from './circleCanvas';
+import ControlBar from './controlBar';
+import setupImageUploader from './imageUploader';
 
 const circleCanvas = new CircleCanvas();
 const controlBar = new ControlBar({
@@ -12,7 +12,7 @@ const controlBar = new ControlBar({
 
 circleCanvas.setSelectionControls(
     controlBar.setSelectedShape,
-    controlBar.unsetSelectedShape
+    controlBar.unsetSelectedShape,
 );
 
 const imageUploadedCallback = (imageUrl) => {

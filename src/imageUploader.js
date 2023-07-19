@@ -1,20 +1,20 @@
-const DB_NAME = "imageDB";
-const STORE_NAME = "images";
+const DB_NAME = 'imageDB';
+const STORE_NAME = 'images';
 
 const setupImageUploader = (uploadCallback, emptyCallback) => {
     let db;
 
     const storeUploadedImage = (file) => {
-        const transaction = db.transaction([STORE_NAME], "readwrite");
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
         const objectStore = transaction.objectStore(STORE_NAME);
-        const imageRequest = objectStore.put(file, "uploadedImage");
+        const imageRequest = objectStore.put(file, 'uploadedImage');
 
         imageRequest.onsuccess = () => {
-            console.log("Image saved successfully");
+            console.log('Image saved successfully');
         };
 
         imageRequest.onerror = () => {
-            console.log("Image could not be saved");
+            console.log('Image could not be saved');
         };
     };
 
@@ -33,10 +33,10 @@ const setupImageUploader = (uploadCallback, emptyCallback) => {
     const invokeUploadCallbackIfSavedImageExists = () => {
         const transaction = db.transaction([STORE_NAME]);
         const objectStore = transaction.objectStore(STORE_NAME);
-        const imageRequest = objectStore.get("uploadedImage");
+        const imageRequest = objectStore.get('uploadedImage');
 
         imageRequest.onerror = () => {
-            console.log("Could not retrieve image");
+            console.log('Could not retrieve image');
         };
 
         imageRequest.onsuccess = () => {
@@ -51,7 +51,7 @@ const setupImageUploader = (uploadCallback, emptyCallback) => {
     const request = indexedDB.open(DB_NAME, 1);
 
     request.onerror = () => {
-        console.log("Could not open IndexedDB");
+        console.log('Could not open IndexedDB');
     };
 
     request.onsuccess = (event) => {
@@ -65,8 +65,8 @@ const setupImageUploader = (uploadCallback, emptyCallback) => {
     };
 
     document
-        .getElementById("imageUpload")
-        .addEventListener("change", fileInputChangeListener);
+        .getElementById('imageUpload')
+        .addEventListener('change', fileInputChangeListener);
 };
 
 export default setupImageUploader;
