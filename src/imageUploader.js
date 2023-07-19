@@ -1,74 +1,72 @@
-const DB_NAME = 'imageDB';
-const STORE_NAME = 'images';
+const DB_NAME = "imageDB";
+const STORE_NAME = "images";
 
+const setupImageUploader = (uploadCallback, emptyCallback) => {
+  let db;
 
-class ImageUploader {
-  constructor(uploadCallback, emptyCallback) {
-    this.emptyCallback = emptyCallback;
-    this.uploadCallback = uploadCallback;
+  const storeUploadedImage = (file) => {
+    const transaction = db.transaction([STORE_NAME], "readwrite");
+    const objectStore = transaction.objectStore(STORE_NAME);
+    const imageRequest = objectStore.put(file, "uploadedImage");
 
-    const request = indexedDB.open(DB_NAME, 1);
-    
-    request.onerror = () => {
-      console.log('Could not open IndexedDB');
-    };
-    
-    request.onsuccess = (event) => {
-      this.db = event.target.result;
-      this.invokeUploadCallbackIfSavedImageExists();
-    };
-    
-    request.onupgradeneeded = (event) => {
-      this.db = event.target.result;
-      this.db.createObjectStore(STORE_NAME);
+    imageRequest.onsuccess = () => {
+      console.log("Image saved successfully");
     };
 
-    document.getElementById('imageUpload').addEventListener('change', this.fileInputChangeListener);
-  }
-  
-  fileInputChangeListener = (e) => {
+    imageRequest.onerror = () => {
+      console.log("Image could not be saved");
+    };
+  };
+
+  const fileInputChangeListener = (e) => {
     const imageFile = e.target.files[0];
     if (imageFile) {
       const imageURL = URL.createObjectURL(e.target.files[0]);
-      this.storeUploadedImage(imageFile)
-      
-      this.uploadCallback(imageURL);
-    } else {
-      this.emptyCallback();
-    }
-  }
+      storeUploadedImage(imageFile);
 
-  invokeUploadCallbackIfSavedImageExists = () => {
-    const transaction = this.db.transaction([STORE_NAME]);
+      uploadCallback(imageURL);
+    } else {
+      emptyCallback();
+    }
+  };
+
+  const invokeUploadCallbackIfSavedImageExists = () => {
+    const transaction = db.transaction([STORE_NAME]);
     const objectStore = transaction.objectStore(STORE_NAME);
-    const imageRequest = objectStore.get('uploadedImage');
-  
+    const imageRequest = objectStore.get("uploadedImage");
+
     imageRequest.onerror = () => {
-      console.log('Could not retrieve image');
+      console.log("Could not retrieve image");
     };
-  
+
     imageRequest.onsuccess = () => {
       // request.result is the Blob
       if (imageRequest.result) {
         const imageUrl = URL.createObjectURL(imageRequest.result);
-        this.uploadCallback(imageUrl)
+        uploadCallback(imageUrl);
       }
     };
-  }
+  };
 
-  storeUploadedImage = (file) => {
-    const transaction = this.db.transaction([STORE_NAME], 'readwrite');
-    const objectStore = transaction.objectStore(STORE_NAME);
-    const imageRequest = objectStore.put(file, 'uploadedImage');
+  const request = indexedDB.open(DB_NAME, 1);
 
-    imageRequest.onsuccess = () => {
-      console.log('Image saved successfully');
-    };
+  request.onerror = () => {
+    console.log("Could not open IndexedDB");
+  };
 
-    imageRequest.onerror = () => {
-      console.log('Image could not be saved');
-    };
-  }
+  request.onsuccess = (event) => {
+    db = event.target.result;
+    invokeUploadCallbackIfSavedImageExists();
+  };
+
+  request.onupgradeneeded = (event) => {
+    db = event.target.result;
+    db.createObjectStore(STORE_NAME);
+  };
+
+  document
+    .getElementById("imageUpload")
+    .addEventListener("change", fileInputChangeListener);
 };
 
-export default ImageUploader;
+export default setupImageUploader;

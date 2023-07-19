@@ -1,6 +1,6 @@
-import CircleCanvas from './circleCanvas';
-import ControlBar from './controlBar';
-import ImageUploader from './imageUploader';
+import CircleCanvas from "./circleCanvas";
+import ControlBar from "./controlBar";
+import setupImageUploader from "./imageUploader";
 
 const circleCanvas = new CircleCanvas();
 const controlBar = new ControlBar({
@@ -10,7 +10,10 @@ const controlBar = new ControlBar({
   applyStyleCallback: circleCanvas.applyStyle,
 });
 
-circleCanvas.setSelectionControls(controlBar.setSelectedShape, controlBar.unsetSelectedShape);
+circleCanvas.setSelectionControls(
+  controlBar.setSelectedShape,
+  controlBar.unsetSelectedShape
+);
 
 const imageUploadedCallback = (imageUrl) => {
   circleCanvas.setBackgroundImage(imageUrl);
@@ -21,5 +24,4 @@ const imageEmptyCallback = () => {
   controlBar.hide();
 };
 
-// this is bad, go back to single function
-new ImageUploader(imageUploadedCallback, imageEmptyCallback);
+setupImageUploader(imageUploadedCallback, imageEmptyCallback);
