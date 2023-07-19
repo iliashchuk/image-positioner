@@ -7,11 +7,11 @@
     </head>
     <body>
         <input type="file" id="imageUpload" accept="image/*" />
+        <button id="export">Export</button>
         <div
             id="controlBar"
             style="display: none; align-items: center; gap: 5px"
         >
-            <button id="export" style="display: none">Export</button>
             <label for="circleSize">Circle Size: </label>
             <input type="range" id="circleSize" min="10" max="100" value="50" />
             <label for="circleOpacity">Circle Opacity: </label>
@@ -28,9 +28,7 @@
             <button id="applyStyle" style="display: none">
                 Apply Style To All
             </button>
-            <button id="deleteButton" style="margin-left: auto">
-                Remove All
-            </button>
+            <button id="delete" style="margin-left: auto">Remove All</button>
         </div>
         <div>
             <canvas id="canvas"></canvas>

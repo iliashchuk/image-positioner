@@ -1,5 +1,6 @@
 import store from 'store2';
 
+const EXPORT_FILE_NAME = 'circles.json';
 const STORAGE_KEYS = Object.freeze({
     circles: 'circles',
     config: 'config',
@@ -22,6 +23,7 @@ export default class CircleCanvas {
         this.applyStyle = this.applyStyle.bind(this);
         this.deleteCircle = this.deleteCircle.bind(this);
         this.deleteAllCircles = this.deleteAllCircles.bind(this);
+        this.exportCallback = this.exportCallback.bind(this);
     }
 
     updateStoredCircles() {
@@ -160,6 +162,33 @@ export default class CircleCanvas {
 
         this.updateStoredCircles();
         this.drawCircles();
+    }
+
+    exportCallback() {
+        const exportedCircles = this.circles.map((circle) => {
+            const { x, y, name } = circle;
+
+            return { x, y, name };
+        });
+
+        const circlesJSONString = JSON.stringify(exportedCircles, null, 2);
+
+        const confirmPreview = `Export this?\n\n${circlesJSONString}`;
+
+        if (window.confirm(confirmPreview)) {
+            const circlesBlob = new Blob([circlesJSONString], {
+                type: 'application/json',
+            });
+            const circlesFileURL = URL.createObjectURL(circlesBlob);
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = circlesFileURL;
+            downloadLink.download = EXPORT_FILE_NAME;
+            downloadLink.click();
+
+            URL.revokeObjectURL(circlesFileURL);
+            downloadLink.remove();
+        }
     }
 
     drawCircles() {

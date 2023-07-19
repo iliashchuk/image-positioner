@@ -71,10 +71,10 @@ class ControlBar {
 
     setDeleteButtonTextAndHandler(selectedShape) {
         if (selectedShape) {
-            document.getElementById('deleteButton').textContent = `Remove ${
+            document.getElementById('delete').textContent = `Remove ${
                 selectedShape.name ?? 'selected'
             }`;
-            document.getElementById('deleteButton').onclick = () => {
+            document.getElementById('delete').onclick = () => {
                 if (this.selectedShape) {
                     this.deleteCallback(this.selectedShape);
                     this.unsetSelectedShape();
@@ -84,9 +84,8 @@ class ControlBar {
             return;
         }
 
-        document.getElementById('deleteButton').textContent = 'Remove All';
-        document.getElementById('deleteButton').onclick =
-            this.deleteAllCallback;
+        document.getElementById('delete').textContent = 'Remove All';
+        document.getElementById('delete').onclick = this.deleteAllCallback;
     }
 
     setupListeners() {
@@ -117,7 +116,7 @@ class ControlBar {
 
             if (this.selectedShape) {
                 this.selectedShape.name = name;
-                document.getElementById('deleteCircle').textContent = `Remove ${
+                document.getElementById('delete').textContent = `Remove ${
                     this.selectedShape.name ?? 'selected'
                 }`;
             }
