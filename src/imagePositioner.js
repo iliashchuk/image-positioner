@@ -8,7 +8,8 @@ const controlBar = new ControlBar({
     deleteCallback: circleCanvas.deleteCircle,
     deleteAllCallback: circleCanvas.deleteAllCircles,
     applyStyleCallback: circleCanvas.applyStyle,
-    exportCallback: circleCanvas.exportCallback,
+    exportCallback: circleCanvas.exportCircles,
+    importCallback: circleCanvas.importCircles,
 });
 
 circleCanvas.setSelectionControls(

@@ -23,7 +23,9 @@ export default class CircleCanvas {
         this.applyStyle = this.applyStyle.bind(this);
         this.deleteCircle = this.deleteCircle.bind(this);
         this.deleteAllCircles = this.deleteAllCircles.bind(this);
-        this.exportCallback = this.exportCallback.bind(this);
+        this.setSelectionControls = this.setSelectionControls.bind(this);
+        this.exportCircles = this.exportCircles.bind(this);
+        this.importCircles = this.importCircles.bind(this);
     }
 
     updateStoredCircles() {
@@ -40,6 +42,7 @@ export default class CircleCanvas {
         this.config = { ...this.config, ...config };
 
         store(STORAGE_KEYS.config, this.config);
+        this.updateStoredCircles();
 
         this.drawCircles();
     }
@@ -63,11 +66,11 @@ export default class CircleCanvas {
         this.backgroundImage.onload = () => {
             const maxWidth = window.innerWidth;
             const scaleFactor = maxWidth / this.backgroundImage.width;
-            const scaledWidth = this.backgroundImage.width * scaleFactor;
-            const scaledHeight = this.backgroundImage.height * scaleFactor;
+            this.scaledImageWidth = this.backgroundImage.width * scaleFactor;
+            this.scaledImageHeight = this.backgroundImage.height * scaleFactor;
 
-            this.canvas.width = scaledWidth;
-            this.canvas.height = scaledHeight;
+            this.canvas.width = this.scaledImageWidth;
+            this.canvas.height = this.scaledImageHeight;
             this.drawCircles();
         };
 
@@ -164,11 +167,19 @@ export default class CircleCanvas {
         this.drawCircles();
     }
 
-    exportCallback() {
+    exportCircles() {
         const exportedCircles = this.circles.map((circle) => {
-            const { x, y, name } = circle;
+            let { x, y, name, size } = circle;
 
-            return { x, y, name };
+            x /= this.scaledImageWidth;
+            y /= this.scaledImageHeight;
+            size /= this.scaledImageWidth;
+
+            if (name) {
+                name = name.toLowerCase();
+            }
+
+            return { x, y, size, name };
         });
 
         const circlesJSONString = JSON.stringify(exportedCircles, null, 2);
@@ -189,6 +200,22 @@ export default class CircleCanvas {
             URL.revokeObjectURL(circlesFileURL);
             downloadLink.remove();
         }
+    }
+
+    importCircles(importedCircles) {
+        this.circles = importedCircles.map((circle) => {
+            const { opacity, fillColor } = this.config;
+            const newCircle = { opacity, fillColor };
+
+            newCircle.x = circle.x * this.scaledImageWidth;
+            newCircle.y = circle.y * this.scaledImageHeight;
+            newCircle.size = circle.size * this.scaledImageWidth;
+            newCircle.name = circle.name;
+
+            return newCircle;
+        });
+
+        this.drawCircles();
     }
 
     drawCircles() {

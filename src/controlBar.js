@@ -5,6 +5,7 @@ class ControlBar {
         deleteAllCallback,
         applyStyleCallback,
         exportCallback,
+        importCallback,
     }) {
         this.selectedShape = null;
         this.element = document.getElementById('controlBar');
@@ -13,6 +14,7 @@ class ControlBar {
         this.deleteCallback = deleteCallback;
         this.deleteAllCallback = deleteAllCallback;
         this.exportCallback = exportCallback;
+        this.importCallback = importCallback;
 
         this.setConfigCallback({
             size: 50,
@@ -147,6 +149,26 @@ class ControlBar {
         document.getElementById('export').onclick = () => {
             this.exportCallback();
         };
+
+        document.getElementById('import').addEventListener('change', (e) => {
+            try {
+                const jsonFile = e.target.files[0];
+                if (!jsonFile) {
+                    throw new Error();
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = (event) => {
+                    const contents = event.target.result;
+                    this.importCallback(JSON.parse(contents));
+                };
+
+                reader.readAsText(jsonFile);
+            } catch {
+                console.log('Failed to upload or parse.');
+            }
+        });
     }
 
     static extractStyleFromConfig(config) {

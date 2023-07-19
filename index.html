@@ -6,8 +6,26 @@
         <title>Image Upload and Preview</title>
     </head>
     <body>
-        <input type="file" id="imageUpload" accept="image/*" />
+        <button
+            id="imageUploadButton"
+            onclick="document.getElementById('imageUpload').click()"
+        >
+            Set Image
+        </button>
+        <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            style="display: none"
+        />
         <button id="export">Export</button>
+        <button
+            id="importButton"
+            onclick="document.getElementById('import').click()"
+        >
+            Import circles and redraw
+        </button>
+        <input type="file" id="import" accept=".json" style="display: none" />
         <div
             id="controlBar"
             style="display: none; align-items: center; gap: 5px"
