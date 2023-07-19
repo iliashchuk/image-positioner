@@ -1,27 +1,31 @@
 class ControlBar {
   constructor({
-    setConfigCallback, deleteCallback, deleteAllCallback, applyStyleCallback,
+    setConfigCallback,
+    deleteCallback,
+    deleteAllCallback,
+    applyStyleCallback,
   }) {
     this.selectedShape = null;
-    this.element = document.getElementById('controlBar');
+    this.element = document.getElementById("controlBar");
     this.setConfigCallback = setConfigCallback;
     this.applyStyleCallback = applyStyleCallback;
     this.deleteCallback = deleteCallback;
     this.deleteAllCallback = deleteAllCallback;
 
-    this.setConfigCallback({ size: 50, opacity: 100, fillColor: '#000000' });
+    this.setConfigCallback({ size: 50, opacity: 100, fillColor: "#000000" });
     this.setSelectedShape = this.setSelectedShape.bind(this);
     this.unsetSelectedShape = this.unsetSelectedShape.bind(this);
 
+    this.unsetSelectedShape();
     this.setupListeners();
   }
 
   hide() {
-    this.element.style.display = 'hidden';
+    this.element.style.display = "hidden";
   }
 
   show() {
-    this.element.style.display = 'flex';
+    this.element.style.display = "flex";
   }
 
   setSelectedShape(shape) {
@@ -32,7 +36,7 @@ class ControlBar {
     this.setDeleteButtonTextAndHandler(this.selectedShape);
     this.setConfigToShapeConfig(shape);
 
-    document.getElementById('applyStyle').style.display = 'initial';
+    document.getElementById("applyStyle").style.display = "initial";
   }
 
   unsetSelectedShape() {
@@ -42,7 +46,7 @@ class ControlBar {
 
       this.setDeleteButtonTextAndHandler();
 
-      document.getElementById('applyStyle').style.display = 'none';
+      document.getElementById("applyStyle").style.display = "none";
 
       return true;
     }
@@ -51,18 +55,20 @@ class ControlBar {
   }
 
   setConfigToShapeConfig(shape) {
-    document.getElementById('circleSize').value = shape.size;
-    document.getElementById('circleFillColor').value = shape.fillColor;
-    document.getElementById('circleOpacity').value = shape.opacity * 100;
-    document.getElementById('circleName').value = shape.name ?? '';
+    document.getElementById("circleSize").value = shape.size;
+    document.getElementById("circleFillColor").value = shape.fillColor;
+    document.getElementById("circleOpacity").value = shape.opacity * 100;
+    document.getElementById("circleName").value = shape.name ?? "";
 
     this.setConfigCallback(ControlBar.extractStyleFromConfig(shape));
   }
 
   setDeleteButtonTextAndHandler(selectedShape) {
     if (selectedShape) {
-      document.getElementById('deleteButton').textContent = `Remove ${selectedShape.name ?? 'selected'}`;
-      document.getElementById('deleteButton').onclick = () => {
+      document.getElementById("deleteButton").textContent = `Remove ${
+        selectedShape.name ?? "selected"
+      }`;
+      document.getElementById("deleteButton").onclick = () => {
         if (this.selectedShape) {
           this.deleteCallback(this.selectedShape);
           this.unsetSelectedShape();
@@ -72,12 +78,12 @@ class ControlBar {
       return;
     }
 
-    document.getElementById('deleteButton').textContent = 'Remove All';
-    document.getElementById('deleteButton').onclick = this.deleteAllCallback;
+    document.getElementById("deleteButton").textContent = "Remove All";
+    document.getElementById("deleteButton").onclick = this.deleteAllCallback;
   }
 
   setupListeners() {
-    document.getElementById('circleSize').addEventListener('input', (e) => {
+    document.getElementById("circleSize").addEventListener("input", (e) => {
       const size = parseInt(e.target.value, 10);
 
       if (this.selectedShape) {
@@ -87,32 +93,32 @@ class ControlBar {
       this.setConfigCallback({ size });
     });
 
-    document
-      .getElementById('circleOpacity')
-      .addEventListener('input', (e) => {
-        const opacity = parseInt(e.target.value, 10) / 100;
+    document.getElementById("circleOpacity").addEventListener("input", (e) => {
+      const opacity = parseInt(e.target.value, 10) / 100;
 
-        if (this.selectedShape) {
-          this.selectedShape.opacity = opacity;
-        }
+      if (this.selectedShape) {
+        this.selectedShape.opacity = opacity;
+      }
 
-        this.setConfigCallback({ opacity });
-      });
+      this.setConfigCallback({ opacity });
+    });
 
-    document.getElementById('circleName').addEventListener('input', (e) => {
+    document.getElementById("circleName").addEventListener("input", (e) => {
       const name = e.target.value;
 
       if (this.selectedShape) {
         this.selectedShape.name = name;
-        document.getElementById('deleteCircle').textContent = `Remove ${this.selectedShape.name ?? 'selected'}`;
+        document.getElementById("deleteCircle").textContent = `Remove ${
+          this.selectedShape.name ?? "selected"
+        }`;
       }
 
       this.setConfigCallback();
     });
 
     document
-      .getElementById('circleFillColor')
-      .addEventListener('input', (e) => {
+      .getElementById("circleFillColor")
+      .addEventListener("input", (e) => {
         const fillColor = e.target.value;
 
         if (this.selectedShape) {
@@ -122,9 +128,11 @@ class ControlBar {
         this.setConfigCallback({ fillColor });
       });
 
-    document.getElementById('applyStyle').onclick = () => {
+    document.getElementById("applyStyle").onclick = () => {
       if (this.selectedShape) {
-        this.applyStyleCallback(ControlBar.extractStyleFromConfig(this.selectedShape));
+        this.applyStyleCallback(
+          ControlBar.extractStyleFromConfig(this.selectedShape)
+        );
       }
     };
   }
