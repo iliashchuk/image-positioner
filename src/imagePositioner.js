@@ -4,24 +4,24 @@ import setupImageUploader from "./imageUploader";
 
 const circleCanvas = new CircleCanvas();
 const controlBar = new ControlBar({
-  setConfigCallback: circleCanvas.setConfig,
-  deleteCallback: circleCanvas.deleteCircle,
-  deleteAllCallback: circleCanvas.deleteAllCircles,
-  applyStyleCallback: circleCanvas.applyStyle,
+    setConfigCallback: circleCanvas.setConfig,
+    deleteCallback: circleCanvas.deleteCircle,
+    deleteAllCallback: circleCanvas.deleteAllCircles,
+    applyStyleCallback: circleCanvas.applyStyle,
 });
 
 circleCanvas.setSelectionControls(
-  controlBar.setSelectedShape,
-  controlBar.unsetSelectedShape
+    controlBar.setSelectedShape,
+    controlBar.unsetSelectedShape
 );
 
 const imageUploadedCallback = (imageUrl) => {
-  circleCanvas.setBackgroundImage(imageUrl);
-  controlBar.show();
+    circleCanvas.setBackgroundImage(imageUrl);
+    controlBar.show();
 };
 
 const imageEmptyCallback = () => {
-  controlBar.hide();
+    controlBar.hide();
 };
 
 setupImageUploader(imageUploadedCallback, imageEmptyCallback);
